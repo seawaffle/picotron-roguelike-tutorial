@@ -1,0 +1,63 @@
+picotron cartridge // www.picotron.net
+version 2
+
+:: gfx/
+:: gfx/0.gfx
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDE4OjM1OjA4Iixtb2RpZmllZD0iMjAyNC0x
+MC0wNyAyMDoxNjozNyIscmV2aXNpb249MjJdXWx6NADIAAAAXDEAAPMhe1swXT17Ym1wPXB4dQBD
+IBAQBPBWBxAHwBfQF8AHEAfwVixmbGFncz0wLHBhbl94CADKeT0wLHpvb209OH0sPgDxDFAcoCwA
+LHAcQCxAHHAsIAygHBAMEAwwDDAcAAgAU0AMAAzABAAxEBwgEABQIAwQHDAoAP8APEAMIByAHDAc
+YBxgfPADewAcL-DwMQD---------------------------------------------------------
+------_mUG09OH19
+:: gfx/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNC0x
+MC0wNyAyMDoxNjozNyJdXQ==
+:: map/
+:: map/0.map
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDE4OjM1OjA4Iixtb2RpZmllZD0iMjAyNC0x
+MC0wNyAyMDoxNjozNyIscmV2aXNpb249MjFdXWx6NABaAAAASxAAAPAIe3tibXA9dXNlcmRhdGEo
+ImkxNiIsMzIDAC8iMAEA--------------------_6EiKSxwYW5feD0wCADSeT0wLHRpbGVfaD0x
+NgoAEHcKAIB6b29tPTF9fQ==
+:: map/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNC0x
+MC0wNyAyMDoxNjozNyJdXQ==
+:: sfx/
+:: sfx/0.sfx
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDE4OjM1OjA4Iixtb2RpZmllZD0iMjAyNC0x
+MC0wNyAyMDoxNjozNyIscmV2aXNpb249MjJdXWx6NACgAAAACwoAAP8wcHh1AAMoAAAEAAQPQBAC
+DgABoAEgAqAOAA8QAA3wygECA0APD5AEBQYHQAyQCAkKC0AMkA8MDw0PDgxADPD-AQDr-yeqARAG
+DyAQASABIAHwAAIQAg4QASAPISABMA9A8MMPKA--8MYP_AoP-w_AD-cPDQHwCQEQBg4wAP------
+vR--AQCsz8gPQAAPEED--7Dw-wEA-_pQ-----yk=
+:: sfx/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNC0x
+MC0wNyAyMDoxNjozNyJdXQ==
+:: main.lua
+--[[pod_format="raw",created="2024-10-07 18:35:08",modified="2024-10-07 20:16:37",revision=46]]
+function _init()
+	player_x = 150
+	player_y = 100
+end
+
+function _update()
+	if btnp(0) then
+		player_x -= 16
+	elseif btnp(1) then
+		player_x += 16
+	elseif btnp(2) then
+		player_y -= 16
+	elseif btnp(3) then
+		player_y += 16
+	end
+end
+
+function _draw()
+	cls()
+	spr(1, player_x, player_y)
+end
+:: .info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNC0x
+MC0wNyAyMDoxNjozNyIscnVudGltZT0xMSx3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVh
+IzE1Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdvcmtzcGFjZV9p
+bmRleD0yfSx7bG9jYXRpb249Im1hcC8wLm1hcCIsd29ya3NwYWNlX2luZGV4PTN9LHtsb2NhdGlv
+bj0ic2Z4LzAuc2Z4Iix3b3Jrc3BhY2VfaW5kZXg9NH19XV0=
+:: [eoc]
