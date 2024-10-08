@@ -210,4 +210,4 @@ We've added an include statement for utilities.lua way up at the top, and we've 
 
 ![Our walls work!](p2-working-walls.gif)
 
-So cool. I think it's time for another break. [I'll see you later for Part 3!](../part-3/part-3.html)
+So cool. If you want to try mine out, [here it is](./p2-roguelike.html). I think it's time for another break. [I'll see you later for Part 3!](../part-3/part-3.html)
