@@ -1,6 +1,6 @@
 # Part 1: Drawing the player and moving it around
 
-This part assumes you've read Part 0 and are at the Picotron desktop. Press Alt+Right twice to get to the code editor to begin:
+This part assumes [you've read Part 0](../part-0/part-0.html) and are at the Picotron desktop. Press Alt+Right twice to get to the code editor to begin:
 
 ![Screenshot of the Picotron code editor](p1-code-editor.png)
 
@@ -23,7 +23,7 @@ function _draw()
 end
 ```
 
-You could run this right now, but you'd just get a black screen, since we're not drawing anything in our `_draw()` function. So lets add something to simply put some text on the screen by replacing the `_draw()` function with the following:
+You could run this right now, but you'd just get a black screen since we're not drawing anything in our `_draw()` function. So let's add something to simply put some text on the screen by replacing the `_draw()` function with the following:
 
 ```lua
 function _draw()
@@ -104,24 +104,24 @@ function _update()
 end
 ```
 
-`btnp()` is another Picotron API call, this time accepting input from a controller or keyboard. The number in the function is telling Picotron which button we're asking about, in this case 0, 1, 2, 3 are Left, Right, Up and Down respectively. We've added or subtracted 16 pixels from the player's position to represent grid movement in each of these directions (Picotron treats the top left corner of the screen as x=0, y=0). If you run your program now, you can control your character with the arrow keys:
+`btnp()` is another Picotron API call, this time accepting input from a controller or keyboard. The number in the function tells Picotron which button we're asking about, in this case, 0, 1, 2, and 3 are Left, Right, Up, and Down respectively. We've added or subtracted 16 pixels from the player's position to represent grid movement in each of these directions (Picotron treats the top left corner of the screen as x=0, y=0). If you run your program now, you can control your character with the arrow keys:
 
 ![Look at him go!](p1-movement.gif)
 
-Success! But before we take a break, lets talk about two important topics: saving and exporting. Right now, your game is in Picotron's memory, but it hasn't been written out to the file system for safe keeping. If you close Picotron now, it will all disappear, and you'll have to start this whole thing over. We don't want that! Press Alt+Left once to get over to our Picotron terminal, and type the following:
+Success! But before we take a break, let's talk about two important topics: saving and exporting. Right now, your game is in Picotron's memory, but it hasn't been written out to the file system for safekeeping. If you close Picotron now, it will all disappear, and you'll have to start this whole thing over. We don't want that! Press Alt+Left once to get over to our Picotron terminal, and type the following:
 
 ```
 cd /
 save roguelike
 ```
 
-The first part (`cd /`) is to make sure that we're not inside `/ram/cart` which is where Picotron holds your game in its memory.  You can't save the game inside memory, and it would yell at you if you tried. So, we're moving to /, which is the root of the filesystem.  Feel free to make a folder for your work if you want (`mkdir directory_name` and then `cd directory_name`), but you don't have to. The second line (`save roguelike`) saves the game as 'roguelike'. It'll create a file on the Picotron filesystem called roguelike.p64, and everything you do will be inside that file, from your code to your cool little doodle of your character. If you want to double check, you can type `ls` to show the contents of the current directory you're in, and you should see roguelike.p64 in there
+The first part (`cd /`) is to make sure that we're not inside `/ram/cart` which is where Picotron holds your game in its memory.  You can't save the game inside memory, and it would yell at you if you tried. So, we're moving to /, which is the root of the filesystem.  Feel free to make a folder for your work if you want (`mkdir directory_name` and then `cd directory_name`), but you don't have to. The second line (`save roguelike`) saves the game as 'roguelike'. It'll create a file on the Picotron filesystem called roguelike.p64, and everything you do will be inside that file, from your code to your cool little doodle of your character. If you want to double-check, you can type `ls` to show the contents of the current directory you're in, and you should see roguelike.p64 in there
 
 But what if we want to share our awesome game with the world? Picotron has another terminal command for that:
 ```
 export roguelike.html
 ```
 
-Then, you can go back over to your desktop (Alt+Left) and open up the drive by double-clicking on 'drive.loc'. Find 'roguelike.html' in there, right-click and select 'View in Host OS'. A web browser should pop up on your computer with a black screen and a little play icon. Click that play icon, and Picotron will boot into your game, right in the browser! You can move your little dude around to your heart's content, and you can take that html file (the path to which you should be able to see in your browser) and share that on whatever web hosting thing you like. [Check out mine here!](./p1-roguelike.html)
+Then, you can go back over to your desktop (Alt+Left) and open up the drive by double-clicking on 'drive.loc'. Find 'roguelike.html' in there, right-click and select 'View in Host OS'. A web browser should pop up on your computer with a black screen and a little play icon. Click that play icon, and Picotron will boot into your game, right in the browser! You can move your little dude around to your heart's content, and you can take that HTML file (the path to which you should be able to see in your browser) and share that on whatever web hosting thing you like. [Check out mine here!](./p1-roguelike.html). According to the Picotron roadmap, binary exports will be available once it reaches v0.2, but right now all we have are HTML files.
 
 Whew, we did a lot of work today. Maybe it's time to take a break. [Or maybe it's time to move to Part 2](../part-2/part-2.html)? Your call!
