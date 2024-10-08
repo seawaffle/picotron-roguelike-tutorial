@@ -1,0 +1,133 @@
+picotron cartridge // www.picotron.net
+version 2
+
+:: gfx/
+:: gfx/0.gfx
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDE4OjM1OjA4Iixtb2RpZmllZD0iMjAyNC0x
+MC0wOCAxODozNDoyOSIscmV2aXNpb249ODBdXWx6NAAmAQAAvzEAAPMhe1swXT17Ym1wPXB4dQBD
+IBAQBPBWBxAHwBfQF8AHEAfwVixmbGFncz0wLHBhbl94CADKeT0wLHpvb209OH0sPgDxDFAcoCwA
+LHAcQCxAHHAsIAygHBAMEAwwDDAcAAgAU0AMAAzABAAxEBwgEABQIAwQHDAoAP8APEAMIByAHDAc
+YBxgfPADewAc-QXwBEiQGCAYcBhAODAYgBggCKAIIAIAEqAEAP8NGBBIEBgwCBAIIAgQCEAIcBhQ
+CFAYcAggKIBIYHcAHR-wMQD--------------3LDpRDVENUQJfAQJSDFAgBDlfAQhQsAEzVOAB8x
+sAAeDzEA------------------------------------------------tFBtPTh9fQ==
+:: gfx/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNC0x
+MC0wOCAxODozNDoyOSJdXQ==
+:: map/
+:: map/0.map
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDE4OjM1OjA4Iixtb2RpZmllZD0iMjAyNC0x
+MC0wOCAxODozNDoyOSIscmV2aXNpb249NzJdXWx6NABoAAAAWBAAAPAIe3tibXA9dXNlcmRhdGEo
+ImkxNiIsMzIDAC8iMAEA--------------------_-EIIiksaGlkZGVuPWZhbHNlLHBhbl94PTAI
+ANJ5PTAsdGlsZV9oPTE2CgAQdwoAgHpvb209MX19
+:: map/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNC0x
+MC0wOCAxODozNDoyOSJdXQ==
+:: sfx/
+:: sfx/0.sfx
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDE4OjM1OjA4Iixtb2RpZmllZD0iMjAyNC0x
+MC0wOCAxODozNDoyOSIscmV2aXNpb249NzNdXWx6NACgAAAACwoAAP8wcHh1AAMoAAAEAAQPQBAC
+DgABoAEgAqAOAA8QAA3wygECA0APD5AEBQYHQAyQCAkKC0AMkA8MDw0PDgxADPD-AQDr-yeqARAG
+DyAQASABIAHwAAIQAg4QASAPISABMA9A8MMPKA--8MYP_AoP-w_AD-cPDQHwCQEQBg4wAP------
+vR--AQCsz8gPQAAPEED--7Dw-wEA-_pQ-----yk=
+:: sfx/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNC0x
+MC0wOCAxODozNDoyOSJdXQ==
+:: entities.lua
+--[[pod_format="raw",created="2024-10-08 15:07:00",modified="2024-10-08 18:34:29",revision=71]]
+Entity = {}
+Entity.__index = Entity
+
+-- constructor for generic entity
+function Entity:new(x, y, sprite)
+	local o = setmetatable({}, Entity)
+	o.x = x
+	o.y = y
+	o.sprite = sprite
+	return o
+end
+
+-- generic move function for entity
+function Entity:move(dx, dy)
+	local destX = self.x + dx
+	local destY = self.y + dy
+	if isWalkable(destX, destY) then
+		self.x = destX
+		self.y = destY
+	end
+end
+
+-- generic draw function for entity
+function Entity:draw()
+	spr(self.sprite, self.x*16, self.y*16)
+end
+:: main.lua
+--[[pod_format="raw",created="2024-10-07 18:35:08",modified="2024-10-08 18:34:29",revision=138]]
+include "utilities.lua"
+include "entities.lua"
+include "mapgen.lua"
+
+function _init()
+	populateMap()
+	entities = {}
+	player = Entity:new(1, 1, 1)
+	add(entities, player)
+	npc = Entity:new(10, 8, 2)
+	add(entities, npc)
+end
+
+function _update()
+	if btnp(0) then
+		player:move(-1, 0)
+	elseif btnp(1) then
+		player:move(1, 0)
+	elseif btnp(2) then
+		player:move(0, -1)
+	elseif btnp(3) then
+		player:move(0, 1)
+	end
+end
+
+function _draw()
+	cls()
+	map()
+	for entity in all(entities) do
+		entity:draw()
+	end
+end
+:: mapgen.lua
+--[[pod_format="raw",created="2024-10-08 16:51:54",modified="2024-10-08 18:34:29",revision=32]]
+width = 29
+height = 16
+
+floor = 0
+wall = 63
+
+function populateMap()
+	for y = 0, height do
+		for x = 0, width do
+			tile = floor
+			if x == 0 or x == width then
+				tile = wall
+			elseif y == 0 or y == height then
+				tile = wall
+			end			
+			mset(x, y, tile)
+		end
+	end
+end
+:: utilities.lua
+--[[pod_format="raw",created="2024-10-08 17:52:38",modified="2024-10-08 18:34:29",revision=34]]
+function isWalkable(x, y)
+	local t = mget(x, y)
+	return not fget(t, 0)
+end
+:: .info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNC0x
+MC0wOCAxODozNDoyOSIscnVudGltZT0xMSx3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVh
+IzIyIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJlbnRpdGllcy5sdWEjMTkiLHdvcmtz
+cGFjZV9pbmRleD0xfSx7bG9jYXRpb249Im1hcGdlbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9
+LHtsb2NhdGlvbj0idXRpbGl0aWVzLmx1YSMzIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9u
+PSJnZngvMC5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRpb249Im1hcC8wLm1hcCIsd29y
+a3NwYWNlX2luZGV4PTN9LHtsb2NhdGlvbj0ic2Z4LzAuc2Z4Iix3b3Jrc3BhY2VfaW5kZXg9NH19
+XV0=
+:: [eoc]
