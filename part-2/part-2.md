@@ -1,6 +1,15 @@
 # Part 2: Generic entities and the map
 
-Well, we've got something going in [Part 1](../part-1/part-1.html), but if we want our future award-winning roguelike to be understandable when working on it in the future, we need to start laying the groundwork now. To start off, we need to group information about the player (and future enemies!) together into an object. Let's start by making a new file to keep this stuff in. In your code editor, click the 'New Tab' button, which is a tab with a + at the end of your tab list, which should only have 'main.lua' at this point.
+Welcome back! If you'll recall from [Part 1](../part-1/part-1.html), we had created a little player and got him moving around the screen. But wait, I turned off Picotron while I took a nap. How do I get my awesome stuff back? Try typing the following in the terminal:
+
+```
+cd /
+load roguelike.p64
+```
+
+If you chose to save your work somewhere else on the file system, replace the path in that `cd` command with your path. After you run the `load` command, your game will be opened and stored in memory, simple as that. And if we want to save it in the future, we don't even need to use the terminal, a quick Ctrl+S will do it.
+
+Now that we've got that covered, let's get back to it. If we want our future award-winning roguelike to be understandable when working on it in the future, we need to start laying the groundwork now. To start off, we need to group information about the player (and future enemies!) together into an object. Let's start by making a new file to keep this stuff in. In your code editor, click the 'New Tab' button, which is a tab with a + at the end of your tab list, which should only have 'main.lua' at this point.
 
 ![The new file tab](p2-new-file.png)
 
