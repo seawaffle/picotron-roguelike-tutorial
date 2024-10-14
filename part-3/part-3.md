@@ -58,6 +58,7 @@ Whew, that's a lot. So what are we doing here?
 - We changed the width and height of our dungeon to give us more space to work with.
 - We made a rectangular room object called `RectRoom`, that'll represent placing rectangular rooms in our map. This also has a helper function in it to let us check to see if a tile is inside a room.
 - We changed the `populateMap` function to put some rooms down, treat all map tiles as wall, and then as we set the tiles in Picotron's map, go through and check to see if a given tile is in our rooms, so we can see if we need to make it floor.
+
 In addition, we'll need to go into the map editor and set the layer size to the width and height we decided in code:
 
 ![Picotron Map Editor](p3-map-editor.png)
@@ -180,6 +181,7 @@ Once again, that's a lot of work. What have we done?
 	- We've using bracket notation (`table[x]` instead of `table.x`) in order to simply things a little. Otherwise, we'd have to have duplicated code.
 - We moved one of our rooms around, so we can see them sweet L-shaped tunnels.
 - We added a loop at the bottom of our `populateMap` function to handle the digging. We create a coroutine from our `tunnelBetween` function using `cocreate`, then we loop. Every time we get back from the tunnel function, we check to see if our coroutine status is still good, and if so, we change the coordinate it returned to us into floor.
+
 Let's try running it!
 
 ![Hey look, a corridor!](p3-corridors.gif)
@@ -320,6 +322,7 @@ Wow, we hit everything there! That's a lot, so let's break down what we did:
 - Then, down at the bottom of `populateMap`, we take the tunneling logic and put it in a loop where we iterate over the list of rooms and connect them to each other.
 - In entities.lua, we've made two new functions: `populateEntities` and `findEmptySpot`. `populateEntities` is where our entity creation logic from main.lua goes, but we use `findEmptySpot` to generate random starting points around the map and check if they're walkable. If they are, we place our player or npcs there.
 - Over in main.lua, we've added `mapHeight` and `mapWidth` to the top of the file under the includes, and we've simplified our init statement by boiling it down to just `populateMap` and `populateEntities`.
+
 That was a lot, so let's run our game and soak in the results of our hard work.
 
 ![A completely random dungeon](p3-random-dungeon.gif)
