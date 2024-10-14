@@ -4,7 +4,7 @@ version 2
 :: gfx/
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDE4OjM1OjA4Iixtb2RpZmllZD0iMjAyNC0x
-MC0xMSAyMToxMDozNyIscmV2aXNpb249MTg5XV1sejQAJgEAAL8xAADzIXtbMF09e2JtcD1weHUA
+MC0xNCAxNzoxNDoyOSIscmV2aXNpb249MjExXV1sejQAJgEAAL8xAADzIXtbMF09e2JtcD1weHUA
 QyAQEATwVgcQB8AX0BfABxAH8FYsZmxhZ3M9MCxwYW5feAgAynk9MCx6b29tPTh9LD4A8QxQHKAs
 ACxwHEAsQBxwLCAMoBwQDBAMMAwwHAAIAFNADAAMwAQAMRAcIBAAUCAMEBwwKAD-ADxADCAcgBww
 HGAcYHzwA3sAHP0F8ARIkBggGHAYQDgwGIAYIAigCCACABKgBAD-DRgQSBAYMAgQCCAIEAhACHAY
@@ -12,29 +12,29 @@ UAhQGHAIICiASGB3AB0f8DEA--------------9yw6UQ1RDVECXwECUgxQIAQ5XwEIULABM1TgAf
 MbAAHg8xAP-----------------------------------------------7RQbT04fX0=
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNC0x
-MC0xMSAyMToxMDozNyJdXQ==
+MC0xNCAxNzoxNDozMCJdXQ==
 :: map/
 :: map/0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDE4OjM1OjA4Iixtb2RpZmllZD0iMjAyNC0x
-MC0xMSAyMToxMDozNyIscmV2aXNpb249MTgyXV1sejQAmAAAANg_AAD-Dnt7Ym1wPXVzZXJkYXRh
+MC0xNCAxNzoxNDoyOSIscmV2aXNpb249MjAzXV1sejQAmAAAANg_AAD-Dnt7Ym1wPXVzZXJkYXRh
 KCJpMTYiLDgwLDUwLCIwAQD-----------------------------------------------------
 -----------------------------6rxCCIpLGhpZGRlbj1mYWxzZSxwYW5feD0wCADSeT0wLHRp
 bGVfaD0xNgoAEHcKAIB6b29tPTF9fQ==
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNC0x
-MC0xMSAyMToxMDozNyJdXQ==
+MC0xNCAxNzoxNDozMCJdXQ==
 :: sfx/
 :: sfx/0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDE4OjM1OjA4Iixtb2RpZmllZD0iMjAyNC0x
-MC0xMSAyMToxMDozNyIscmV2aXNpb249MTc5XV1sejQAoAAAAAsKAAD-MHB4dQADKAAABAAED0AQ
+MC0xNCAxNzoxNDoyOSIscmV2aXNpb249MjAwXV1sejQAoAAAAAsKAAD-MHB4dQADKAAABAAED0AQ
 Ag4AAaABIAKgDgAPEAAN8MoBAgNADw_QBAUGB0AMkAgJCgtADJAPDA8NDw4MQAzw-wEA6-8nqgEQ
 Bg8gEAEgASAB8AACEAIOEAEgDyEgATAPQPDDDygP--DGD-gKD-8PgA-3Dw0B8AkBEAYOMAD-----
 -70f-wEArM-ID0AADxBA--_w8P8BAP-qUP----8p
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNC0x
-MC0xMSAyMToxMDozNyJdXQ==
+MC0xNCAxNzoxNDozMCJdXQ==
 :: entities.lua
---[[pod_format="raw",created="2024-10-08 15:07:00",modified="2024-10-11 21:10:37",revision=202]]
+--[[pod_format="raw",created="2024-10-08 15:07:00",modified="2024-10-14 17:14:29",revision=244]]
 Entity = {}
 Entity.__index = Entity
 
@@ -54,8 +54,8 @@ function Entity:move(dx, dy)
 	if isWalkable(destX, destY) then
 		self.x = destX
 		self.y = destY
+		printh("move: " .. self.x .. "," .. self.y)
 	end
-	printh("move: " .. self.x .. "," .. self.y)
 end
 
 -- generic draw function for entity
@@ -63,18 +63,20 @@ function Entity:draw()
 	spr(self.sprite, self.x*16, self.y*16)
 end
 
+-- place all of our game entities
 function populateEntities()
 	entities = {}
 	-- add player
 	local x,y = findEmptySpot()
 	player = Entity:new(x, y, 1)
-	printh("player: " .. player.x .. "," .. player.y)
+	add(entities, player)
 	-- add npc
 	local x,y = findEmptySpot()
-	npc = Entity:new(x, y, 3)
-	printh("npc: " .. npc.x .. "," .. npc.y)
+	npc = Entity:new(x, y, 2)
+	add(entities, npc)
 end
 
+-- find a random walkable tile for an entity
 function findEmptySpot()
 	while true do
 		local posX = generateRandomNumber(0, mapWidth)
@@ -85,7 +87,7 @@ function findEmptySpot()
 	end
 end
 :: main.lua
---[[pod_format="raw",created="2024-10-07 18:35:08",modified="2024-10-11 21:10:37",revision=266]]
+--[[pod_format="raw",created="2024-10-07 18:35:08",modified="2024-10-14 17:14:29",revision=305]]
 include "utilities.lua"
 include "entities.lua"
 include "mapgen.lua"
@@ -119,7 +121,7 @@ function _draw()
 	end
 end
 :: mapgen.lua
---[[pod_format="raw",created="2024-10-08 16:51:54",modified="2024-10-11 21:10:37",revision=205]]
+--[[pod_format="raw",created="2024-10-08 16:51:54",modified="2024-10-14 17:14:29",revision=242]]
 maxRooms = 15
 minSize = 6
 maxSize = 10
@@ -142,6 +144,7 @@ function RectRoom:new(x, y, width, height)
 	return o
 end
 
+-- are these coordinates in this room?
 function RectRoom:inRoom(x, y)
 	local inside = false
 	if x >= self.x1 + 1 and x < self.x2 then
@@ -152,6 +155,7 @@ function RectRoom:inRoom(x, y)
 	return inside
 end
 
+-- give us the center coordinates for the room
 function RectRoom:center()
 	local center = {
 	 x = self.x1 + flr(self.width / 2),
@@ -160,6 +164,7 @@ function RectRoom:center()
 	return center
 end
 
+-- do these two rooms intersect?
 function RectRoom:intersects(other)
 	return self.x1 <= other.x2 and self.x2 >= other.x1 and self.y1 <= other.y2 and self.y2 >=other.y1
 end
@@ -194,6 +199,7 @@ function tunnelBetween(room1, room2)
 	end
 end
 
+-- generate a random map
 function populateMap()
 	-- generate a random amount of rooms
 	local rooms = {}
@@ -216,6 +222,7 @@ function populateMap()
 			add(rooms, room)
 		end
 	end
+	-- fill all map tiles with wall, except for tiles that are in a room
 	for y = 0, mapHeight do
 		for x = 0, mapWidth do
 			local tile = wall
@@ -233,30 +240,33 @@ function populateMap()
 		local room2 = rooms[index + 1]
 		tunnel = cocreate(tunnelBetween)
 		while costatus(tunnel) != "dead" do
-			local status, curr = coresume(tunnel, rooms[1], rooms[2])
+			local status, curr = coresume(tunnel, room1, room2)
 			if costatus(tunnel) != "dead" then
 				mset(curr.x, curr.y, floor)
 			end
 		end
 	end
 end
+
 :: utilities.lua
---[[pod_format="raw",created="2024-10-08 17:52:38",modified="2024-10-11 21:10:37",revision=152]]
+--[[pod_format="raw",created="2024-10-08 17:52:38",modified="2024-10-14 17:14:29",revision=177]]
+-- is the given map coordinate walkable?
 function isWalkable(x, y)
 	local t = mget(x, y)
 	return not fget(t, 0)
 end
 
+-- give us a random integer between two values
 function generateRandomNumber(minSize, maxSize)
 	return flr(rnd(maxSize - minSize) + minSize)
 end
 :: .info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNC0x
-MC0xMSAyMToxMDozNyIscnVudGltZT0xMSx3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVh
-IzEwIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJlbnRpdGllcy5sdWEjMzQiLHdvcmtz
-cGFjZV9pbmRleD0xfSx7bG9jYXRpb249Im1hcGdlbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9
-LHtsb2NhdGlvbj0idXRpbGl0aWVzLmx1YSM4Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9u
-PSJnZngvMC5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRpb249Im1hcC8wLm1hcCIsd29y
-a3NwYWNlX2luZGV4PTN9LHtsb2NhdGlvbj0ic2Z4LzAuc2Z4Iix3b3Jrc3BhY2VfaW5kZXg9NH19
-XV0=
+MC0xNCAxNzoxNDozMCIscnVudGltZT0xMSx3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVh
+IzMwIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJlbnRpdGllcy5sdWEjNDIiLHdvcmtz
+cGFjZV9pbmRleD0xfSx7bG9jYXRpb249Im1hcGdlbi5sdWEjMTAxIix3b3Jrc3BhY2VfaW5kZXg9
+MX0se2xvY2F0aW9uPSJ1dGlsaXRpZXMubHVhIzciLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRp
+b249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9LHtsb2NhdGlvbj0ibWFwLzAubWFwIix3
+b3Jrc3BhY2VfaW5kZXg9M30se2xvY2F0aW9uPSJzZngvMC5zZngiLHdvcmtzcGFjZV9pbmRleD00
+fX1dXQ==
 :: [eoc]
