@@ -1,6 +1,6 @@
 # Part 3: Dungeon Generation
 
-Ok, so, in Part 2 we made a room that's the size of our screen. That's not super interesting though, is it? You want to have a bunch of rooms and walk through them! To achieve that, we're going to scrap most of our current 'map generation' logic, and we're going to start carving rooms out of rock, like real dungeons. This is going to be a long one, so buckle up. Let's pop over to mapgen.lua and make a lot of changes:
+Ok, so, in [Part 2](../part-2/part-2.html) we made a room that's the size of our screen. That's not super interesting though, is it? You want to have a bunch of rooms and walk through them! To achieve that, we're going to scrap most of our current 'map generation' logic, and we're going to start carving rooms out of rock, like real dungeons. This is going to be a long one, so buckle up. Let's pop over to mapgen.lua and make a lot of changes:
 
 ```lua
 -- mapgen.lua
