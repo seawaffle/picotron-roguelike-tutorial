@@ -1,5 +1,5 @@
 # Introduction
-This is a tutorial on how to make a basic roguelike in [Picotron](https://www.lexaloffle.com/picotron.php). It follows the basic structure of the [TCOD tutorial}(https://rogueliketutorials.com/tutorials/tcod/v2/), but explaining how to do it in Picotron.
+This is a tutorial on how to make a basic roguelike in [Picotron](https://www.lexaloffle.com/picotron.php). It follows the basic structure of the [TCOD tutorial](https://rogueliketutorials.com/tutorials/tcod/v2/), but explaining how to do it in Picotron.
 
 - [Part 0: Setting up](./part-0/part-0.html)
 - [Part 1: Drawing the player and moving it around](./part-1/part-1.html)
