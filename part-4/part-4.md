@@ -200,4 +200,4 @@ Not a whole lot new here.  We've moved our entity-drawing logic out of `_draw` a
 
 ![Peek-a-boo!](p4-hidden-enemy.gif)
 
-Everything looks like it's in order! Our dungeon now has the appropriate amount of spooky ambiance we're looking for, with enemies lurking just beyond our torchlight. I'm beat, time for another break. I'll see you again in [Part 5!](../part-5/part-5.html)
+Everything looks like it's in order! You can give it a try online [here](./p4-roguelike.html). Our dungeon now has the appropriate amount of spooky ambiance we're looking for, with enemies lurking just beyond our torchlight. I'm beat, time for another break. I'll see you again in [Part 5!](../part-5/part-5.html)
