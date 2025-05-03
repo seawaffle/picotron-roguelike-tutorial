@@ -1,0 +1,377 @@
+picotron cartridge // www.picotron.net
+version 2
+
+:: gfx/
+:: gfx/0.gfx
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDE4OjM1OjA4Iixtb2RpZmllZD0iMjAyNS0w
+NS0wMyAyMToxMTowMCIscmV2aXNpb249MzAwXV1sejQAiAEAADAyAADzIXtbMF09e2JtcD1weHUA
+QyAQEATwVgcQB8AX0BfABxAH8FYsZmxhZ3M9MCxwYW5feAgAynk9MCx6b29tPTh9LD4A8QxQHKAs
+ACxwHEAsQBxwLCAMoBwQDBAMMAwwHAAIAFNADAAMwAQAMRAcIBAAUCAMEBwwKAD-ADxADCAcgBww
+HGAcYHzwA3sAHP0F8ARIkBggGHAYQDgwGIAYIAigCCACABKgBAD-DRgQSBAYMAgQCCAIEAhACHAY
+UAhQGHAIICiASGB3AB3vAd8bEA6wDhAOIA4gDjAIAAABHAAQTgoAUAAuIB4gCABBDlAeEAgAIGAO
+CAD-AqAeEB6QDjAOkA5ALmAOYI4QhAAdH-AxAP--------------ENOvFRDeEN4QLvAQLiDOAgBD
+nvAQjgsAEz5PAB8xTwAUw6UQ1RDVECXwECUgxQIAQ5XwEIULAB41TgAP-wAUDzEA------------
+------------------------------------tFBtPTh9fQ==
+:: gfx/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNS0w
+NS0wMyAyMToxMTowMCJdXQ==
+:: map/
+:: map/0.map
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDE4OjM1OjA4Iixtb2RpZmllZD0iMjAyNS0w
+NS0wMyAyMToxMTowMCIscmV2aXNpb249Mjg2XV1sejQAmAAAANg_AAD-Dnt7Ym1wPXVzZXJkYXRh
+KCJpMTYiLDgwLDUwLCIwAQD-----------------------------------------------------
+-----------------------------6rxCCIpLGhpZGRlbj1mYWxzZSxwYW5feD0wCADSeT0wLHRp
+bGVfaD0xNgoAEHcKAIB6b29tPTF9fQ==
+:: map/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNS0w
+NS0wMyAyMToxMTowMCJdXQ==
+:: sfx/
+:: sfx/0.sfx
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDE4OjM1OjA4Iixtb2RpZmllZD0iMjAyNS0w
+NS0wMyAyMToxMTowMCIscmV2aXNpb249MjgyXV1sejQAoAAAAAsKAAD-MHB4dQADKAAABAAED0AQ
+Ag4AAaABIAKgDgAPEAAN8MoBAgNADw_QBAUGB0AMkAgJCgtADJAPDA8NDw4MQAzw-wEA6-8nqgEQ
+Bg8gEAEgASAB8AACEAIOEAEgDyEgATAPQPDDDygP--DGD-gKD-8PgA-3Dw0B8AkBEAYOMAD-----
+-70f-wEArM-ID0AADxBA--_w8P8BAP-qUP----8p
+:: sfx/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNS0w
+NS0wMyAyMToxMTowMCJdXQ==
+:: entities.lua
+--[[pod_format="raw",created="2024-10-08 15:07:00",modified="2025-05-03 21:11:00",revision=370]]
+Entity = {}
+Entity.__index = Entity
+entities = {}
+
+-- constructor for generic entity
+function Entity:new(x, y, sprite, name, blocksMovement)
+	local o = setmetatable({}, Entity)
+	o.x = x
+	o.y = y
+	o.sprite = sprite
+	o.name = name
+	o.blocksMovement = blocksMovement
+	return o
+end
+
+-- generic move function for entity
+function Entity:move(dx, dy)
+	local destX = self.x + dx
+	local destY = self.y + dy
+	if getBlockingEntity(destX, destY) then
+		self:attack(destX, destY)
+	elseif isWalkable(destX, destY) then
+		self.x = destX
+		self.y = destY
+		printh("move: " .. self.x .. "," .. self.y)
+	end
+end
+
+-- generic melee attack for entity
+function Entity:attack(x, y)
+	target = getBlockingEntity(x, y)
+	printh(self.name .. " kicks " .. target.name)
+end
+
+-- generic draw function for entity
+function Entity:draw()
+	spr(self.sprite, self.x*16, self.y*16)
+end
+
+-- return a 
+function getBlockingEntity(x, y)
+	for entity in all(entities) do
+		if entity.x == x and entity.y == y and entity.blocksMovement then
+			return entity
+		end
+	end
+end
+
+-- find a random walkable tile for an entity
+function findEmptySpot()
+	while true do
+		local posX = generateRandomNumber(0, mapWidth)
+		local posY = generateRandomNumber(0, mapHeight)
+		local index = (posY * mapWidth) + posX
+		if mapTiles[index] == floor then
+			return posX, posY
+		end
+	end
+end
+:: fov.lua
+--[[pod_format="raw",created="2024-10-16 15:21:54",modified="2025-05-03 21:11:00",revision=97]]
+visible = {}
+seen = {}
+
+visionRadius = 5
+
+function updateFOV()
+	for y = 0, mapHeight do
+		for x = 0, mapWidth do
+			local tile = {x=x, y=y}
+			local index = (y * mapWidth) + x
+			if insideCircle(player, tile, visionRadius) then
+				visible[index] = true
+				seen[index] = true
+			else
+				visible[index] = false
+			end			
+		end
+	end
+end
+
+function insideCircle(center, tile, radius)
+	local dx = center.x - tile.x
+	local dy = center.y - tile.y
+	local distanceSquared = (dx * dx) + (dy * dy)
+	return distanceSquared <= (radius * radius)
+end
+:: main.lua
+--[[pod_format="raw",created="2024-10-07 18:35:08",modified="2025-05-03 21:11:00",revision=428]]
+include "utilities.lua"
+include "entities.lua"
+include "mapgen.lua"
+include "fov.lua"
+
+mapWidth = 80
+mapHeight = 50
+
+function _init()
+	populateMap()
+end
+
+function _update()
+	if btnp(0) then
+		player:move(-1, 0)
+	elseif btnp(1) then
+		player:move(1, 0)
+	elseif btnp(2) then
+		player:move(0, -1)
+	elseif btnp(3) then
+		player:move(0, 1)
+	end
+	updateFOV()
+	updateMap()
+end
+
+function _draw()
+	cls()
+	camera(player.x*16 - 15*16, player.y*16 - 8*16)
+	map()
+	drawEntities()
+end
+
+function drawEntities()
+	for entity in all(entities) do
+		if entity == player or insideCircle(player, entity, visionRadius) then
+			entity:draw()
+		end
+	end
+end
+
+function updateMap()
+	for y = 0, mapHeight do
+		for x = 0, mapWidth do
+			local tile = floor
+			local index = (y * mapWidth) + x
+			if mapTiles[index] == wall then
+				if visible[index] then
+					tile = wall
+				elseif seen[index] then
+					tile = seenWall
+				end
+			end
+			mset(x, y, tile)
+		end
+	end
+end
+:: mapgen.lua
+--[[pod_format="raw",created="2024-10-08 16:51:54",modified="2025-05-03 21:11:00",revision=391]]
+maxRooms = 15
+minSize = 6
+maxSize = 10
+maxEnemiesPerRoom = 2
+
+floor = 0
+wall = 63
+seenWall = 62
+
+mapTiles = {}
+
+RectRoom = {}
+RectRoom.__index = RectRoom
+
+-- constructor for RectRoom
+function RectRoom:new(x, y, width, height)
+	local o = setmetatable({}, RectRoom)
+	o.x1 = x
+	o.y1 = y
+	o.x2 = x + width
+	o.y2 = y + height
+	o.width = width
+	o.height = height
+	return o
+end
+
+-- are these coordinates in this room?
+function RectRoom:inRoom(x, y)
+	local inside = false
+	if x >= self.x1 + 1 and x < self.x2 then
+		if y >= self.y1 + 1 and y < self.y2 then
+			inside = true
+		end
+	end
+	return inside
+end
+
+-- give us the center coordinates for the room
+function RectRoom:center()
+	local center = {
+	 x = self.x1 + flr(self.width / 2),
+	 y = self.y1 + flr(self.height / 2),
+	}
+	return center
+end
+
+-- do these two rooms intersect?
+function RectRoom:intersects(other)
+	return self.x1 <= other.x2 and self.x2 >= other.x1 and self.y1 <= other.y2 and self.y2 >=other.y1
+end
+
+-- tunnel between two rooms
+function tunnelBetween(room1, room2)
+	-- set the start point at the center of the first room
+	local current = room1:center()
+	-- set the end point at the center of the second room
+	local finish = room2:center()
+	
+	-- randomly pick if we're going horizontal or vertical
+	local horizontal =  rnd() < 0.5
+	local axis = horizontal and "x" or "y"
+
+	-- loop until we reach the end point
+	while current.x != finish.x or current.y != finish.y do
+		local direction = 0
+		local diff = finish[axis] - current[axis]
+		if diff > 0 then
+			direction = 1
+		elseif diff < 0 then
+			direction = -1
+		end
+		if direction != 0 then
+			current[axis] += direction
+			yield(current)
+		else
+			axis = axis == "x" and "y" or "x"
+			yield(current)
+		end
+	end
+end
+
+-- generate a random map
+function populateMap()
+	-- generate a random amount of rooms
+	local rooms = {}
+	for count = 0, maxRooms do
+		local width = generateRandomNumber(minSize, maxSize)
+		local height = generateRandomNumber(minSize, maxSize)
+		local posX = generateRandomNumber(0, mapWidth - width - 1)
+		local posY = generateRandomNumber(0, mapHeight - height - 1)
+		
+		local room = RectRoom:new(posX, posY, width, height)
+		local good = true
+		-- if the room intersects with another, we're going to toss
+		-- it out and keep going
+		for otherRoom in all(rooms) do
+			if otherRoom:intersects(room) then
+				good = false
+			end
+		end
+		if good then
+			add(rooms, room)
+			-- place player in the first room, enemies can be in any of the others
+			if count == 0 then
+				local x = generateRandomNumber(posX+1, posX + width)
+				local y = generateRandomNumber(posY+1, posY + height)
+				placePlayer(x, y)
+			else
+				-- use this instead of generateRandomNumber function because it is inclusive
+				local enemyCount = flr(rnd(maxEnemiesPerRoom + 1))
+				while (enemyCount > 0) do
+					local x = generateRandomNumber(posX+1, posX + width)
+					local y = generateRandomNumber(posY+1, posY + height)
+					placeEnemy(x, y)		
+					enemyCount = enemyCount - 1
+				end
+			end
+		end
+	end
+	-- fill all map tiles with wall, except for tiles that are in a room
+	for y = 0, mapHeight do
+		for x = 0, mapWidth do
+			local tile = wall
+			local index = (y * mapWidth) + x
+			for room in all(rooms) do
+				if room:inRoom(x, y) then
+					tile = floor
+				end
+			end
+			mapTiles[index] = tile
+		end
+	end
+	-- tunnel between all rooms
+	for index = 1, count(rooms) - 1 do
+		local room1 = rooms[index]
+		local room2 = rooms[index + 1]
+		tunnel = cocreate(tunnelBetween)
+		while costatus(tunnel) != "dead" do
+			local status, curr = coresume(tunnel, room1, room2)
+			if costatus(tunnel) != "dead" then
+				local index = (curr.y * mapWidth) + curr.x
+				mapTiles[index] = floor
+			end
+		end
+	end
+end
+
+function placePlayer(x, y)
+	player = Entity:new(x, y, 1, "Player", true)
+	add(entities, player)
+end
+
+function placeEnemy(x, y)
+	-- check to avoid placing enemies on top of each other
+	for entity in all(entities) do
+		if entity.x == x and entity.y == y then
+			return
+		end
+	end
+	local name = "Red Enemy"
+	local sprite = 2
+	if rnd() > 0.75 then
+		name = "Green Enemy"
+		sprite = 3
+	end
+	local enemy = Entity:new(x, y, sprite, name, true)
+	add(entities, enemy)
+end
+:: utilities.lua
+--[[pod_format="raw",created="2024-10-08 17:52:38",modified="2025-05-03 21:11:00",revision=270]]
+-- is the given map coordinate walkable?
+function isWalkable(x, y)
+	local t = mget(x, y)
+	return not fget(t, 0)
+end
+
+-- give us a random integer between two values
+function generateRandomNumber(minSize, maxSize)
+	return flr(rnd(maxSize - minSize) + minSize)
+end
+:: .info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA3IDIwOjE2OjM3Iixtb2RpZmllZD0iMjAyNS0w
+NS0wMyAyMToxMTowMCIscnVudGltZT0xNyx3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVh
+IzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImVudGl0aWVzLmx1YSMxIix3b3Jrc3Bh
+Y2VfaW5kZXg9MX0se2xvY2F0aW9uPSJtYXBnZW4ubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7
+bG9jYXRpb249InV0aWxpdGllcy5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0i
+Zm92Lmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdvcmtz
+cGFjZV9pbmRleD0yfSx7bG9jYXRpb249Im1hcC8wLm1hcCIsd29ya3NwYWNlX2luZGV4PTN9LHts
+b2NhdGlvbj0ic2Z4LzAuc2Z4Iix3b3Jrc3BhY2VfaW5kZXg9NH19XV0=
+:: [eoc]
