@@ -1,6 +1,6 @@
 # Part 4: Field of View
 
-In [Part 3](../part-3/part-3.html), we generated a whole dungeon and displayed it on the screen. But that's not really the vide we want in our roguelike, right? Roguelikes are supposed to be about exploring and not knowing what terrible bad guy is right behind the corner! So let's make it so that we only draw what the player can see, or has explored. Let's start by making a new sprite for a wall that we've seen, but can't currently seen.
+In [Part 3](../part-3/part-3.html), we generated a whole dungeon and displayed it on the screen. But that's not really the vibe we want in our roguelike, right? Roguelikes are supposed to be about exploring and not knowing what terrible bad guy is right behind the corner! So let's make it so that we only draw what the player can see, or has explored. Let's start by making a new sprite for a wall that we've seen, but can't currently seen.
 
 ![A new sprite for walls we've seen](p4-dark-wall.png)
 
