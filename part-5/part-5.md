@@ -133,7 +133,7 @@ end
 
 There we go. While we were in there, we even took the time to add a random new enemy! Sometimes they show up, and sometimes they don't. Make sure you pop into the sprite editor and make something for that sprite value.
 
-![[p5-new_enemy.png]]
+![Our new scary enemy!](p5-new_enemy.png)
 
 Truly ferocious. Now, we need to go about interacting with these terrifying creatures in some way. The standard in roguelikes is a bump attack, where you attack an enemy by moving into it. Obviously, we'll need to modify our movement action, not only to account for the fact that enemies block movement into their tile, but to treat movement into an occupied tile as a attack.
 
@@ -174,6 +174,6 @@ end
 
 That should do it! On a move action, we check to see if an entity that blocks movement exists in the destination tile, and if it does, we try to kick it instead. You might notice something new in here, the `printh` function. This is a good friend. It lets us print out debug messages to our host terminal. If you're just running Picotron using the shortcut created by the installer, you won't see these messages, but you can modify how you start Picotron to allow you to see them. On Linux, it's as simple as running it in the terminal. On Windows, you can modify the shortcut you're using to say something like `cmd /c "path to picotron executable"`.  Check out [this post about Pico--8](https://www.lexaloffle.com/bbs/?tid=42367) for more information, it works in the same fashion.
 
-![[p5-collision.gif]]
+![Bumping into enemies](p5-collision.gif)
 
 If you try running it now, you'll see that you can no longer walk through enemies, and if you check the terminal, you'll see messages saying that you're kicking all those bad guys. As always, you can [try it out online](p5-roguelike.html). I'll see you in Part 6!
