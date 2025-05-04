@@ -1,6 +1,6 @@
 # Part 6 - Doing Some Damage
 
-In Part 5, we revamped how we make enemies, and laid the framework for attacking. Today we're going to go all the way and start doing more than just kicking them. Get a snack and a drink, this might take a little while. First off, let's change our Entity object to add important information.
+In [Part 5](../part-5/part-5.html), we revamped how we make enemies, and laid the framework for attacking. Today we're going to go all the way and start doing more than just kicking them. Get a snack and a drink, this might take a little while. First off, let's change our Entity object to add important information.
 
 ```lua
 -- entities.lua
@@ -58,7 +58,7 @@ You might notice some different stuff about the constructor. First off, we modif
 
 To deconflict with our new attack property, we've renamed the `attack()` function to `melee()`. Inside the `melee()` function, you'll notice some new logic. If we have a blocking entity, we check to see if it is a combatant and if it has hit points. This way we can implement entities that may be blocking movement, but shouldn't be attacked, like a tree. If our blocking entity is truly a dastardly enemy, we subtract our attack value from its hp. If the hp is at or below zero, we've killed it, and it gets removed from the entity pool. Let's try it out!
 
-![[p6-killing_enemies.gif]]
+![Brutal slaughter of helpless enemies](p6-killing_enemies.gif)
 
 The GIF leaves something to be desired, but trust me, there were some furious button presses and captivating log messages involved in killing that enemy! As you can see, once an enemy is killed, they get removed from the pool and automatically stop being drawn. You can even walk right into the tile they were willing to give their life to defend.
 
@@ -314,7 +314,7 @@ end
 ...
 ```
 We've added pathing.lua to our imports (important to pull that code into our program), and we've added game states. Right now we only have two, the player turn and the enemy turn. We're not doing any complicated logic with speed or anything, everyone gets one turn at a time. In `_update()`, we check to see whose turn it is. If the player's, it waits for input, and on a move, switches to the enemy turn afterwards. If it's the enemy turn, it iterates through all entities, running the `Entity:ai()` function. After everyone's had a go, it's back to the player. Let's give it a shot!
-![[p6-enemy_movement.gif]]
+![They're alive!](p6-enemy_movement.gif)
 
 Wow, everything's so lively now! If you wander around fighting enemies long enough, you'll probably even die, which will definitely crash your game. You might notice I bumped up our view radius. That's so we can see enemies just a little bit before they can see us, feel free to tweak to your liking.
 
