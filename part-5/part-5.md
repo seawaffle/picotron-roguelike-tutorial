@@ -1,7 +1,7 @@
 
 # Part 5: Enemy Placement and Interaction
 
-Ok, I took a bit of a break, but let's get back to things. In Part 4, we made things spookier by limiting our field of view. We've had an enemy hanging around in our dungeon for a while now, but they're just sort of there. They don't move, we can't interact with them, it's just a sprite we can move through. Let's change that today.
+Ok, I took a bit of a break, but let's get back to things. In [Part 4](../part-4/part-4.html), we made things spookier by limiting our field of view. We've had an enemy hanging around in our dungeon for a while now, but they're just sort of there. They don't move, we can't interact with them, it's just a sprite we can move through. Let's change that today.
 
 First off, our entity placement code needs work. Up to now, we've just been placing all the entities in random empty spots after map generation. But we've got a dungeon now, and we might as well make it so that the entity placement is related to the map. First off, we're going to remove the entity placement from main.lua
 
@@ -176,4 +176,4 @@ That should do it! On a move action, we check to see if an entity that blocks mo
 
 ![Bumping into enemies](p5-collision.gif)
 
-If you try running it now, you'll see that you can no longer walk through enemies, and if you check the terminal, you'll see messages saying that you're kicking all those bad guys. As always, you can [try it out online](p5-roguelike.html). I'll see you in Part 6!
+If you try running it now, you'll see that you can no longer walk through enemies, and if you check the terminal, you'll see messages saying that you're kicking all those bad guys. As always, you can [try it out online](p5-roguelike.html). I'll see you in [Part 6](../part-6/part-6.html)!
