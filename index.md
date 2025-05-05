@@ -8,6 +8,7 @@ This is a tutorial on how to make a basic roguelike in [Picotron](https://www.le
 - [Part 4: Field of View](./part-4/part-4.html)
 - [Part 5: Enemy Placement and Interaction](./part-5/part-5.html)
 - [Part 6: Doing Some Damage](./part-6/part-6.html)
+- [Part 7: Building an Interface](./part-7/part-7.html)
 
 
 This tutorial is super indebted to the roguelike tutorials that came before it, specifically:
