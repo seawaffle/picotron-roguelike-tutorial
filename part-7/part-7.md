@@ -35,7 +35,7 @@ end
 ```
 Let's start by making some sections for our information to live. Maybe we'll have a bit on the side for information like player stats, and a bit at the bottom for a message log to see what's going on. To do that, first we change `_draw()` to limit our initial clip area and change our camera position. This limits our map drawing to a 380x200 rectangle, out of our 480x270 screen size. Then after we do all of our usual stuff, we'll call off to a new function `drawInterface()`, which has two helper functions `drawSideUI()` and `drawBottomUI()`. These functions are pretty self explanatory. First, we reset our clipping rectangle and camera, to allow us to reference positions directly on the screen. Then, we draw some blue rectangles with a classy Final Fantasy style white border along the edges.
 
-![[p7-rectangles.png]]
+![Some beautiful rectangles](p7-rectangles.png)
 Looking pretty good so far, but a blue rectangle's useless without some words in there. Let's start with the side UI, since the information for that is readily available in our player object.
 
 ```lua
@@ -52,7 +52,7 @@ function drawSideUI()
 	print("Attack: " .. player.attack)
 end
 ```
-![[p7-player_info.png]]
+![Now we know who we are](p7-player_info.png)
 
 Well, that certainly does the trick. Now we can see our name, current HP and how much damage we do, with plenty of room for any future stuff we need to plop in there. It's not done in the nicest way, using magic numbers and stuff for our positioning, but there's time for cleaning things up later on. The `cursor()` function is new, it lets us set the position that we start printing text at. after every `print()` function, it jumps down to let us print on the next line for the size of our font. Pretty nice!
 
@@ -140,7 +140,7 @@ end
 
 If you run your game, you should be able to see your logs in all their glory.
 
-![[p7-logs.gif]]
+![Check out those logs](p7-logs.gif)
 
 Wow, we're cooking with gas now! What more could you want? Well, maybe some color so we can differentiate the log messages a little? We'll make our player's actions white, enemy actions orange, and deaths red. This is really simple, since Picotron lets us just specify color codes inside the text.
 
@@ -237,6 +237,310 @@ end
 
 So here, on the player's turn, we're checking to see if we've died. If so, we flip to the GAME_OVER state. That causes a big old window to be drawn on the screen, and let's us press X to restart our game. We reinitialize everything when restarting, and toss a cheeky "Welcome back" into the logs.
 
-![[p7-game_over.gif]]
+![Game over, man! GAME OVER!](p7-game_over.gif)
 
-TODO: logs view
+Now to view the logs. We're going to do something very similar to the Game Over screen, but this time the player is going to have control over opening and closing the window.
+
+```lua
+-- main.lua
+
+function _update()
+	if currentState == State.PLAYER_TURN then
+		if player.hp <=0 then
+			currentState = State.GAME_OVER
+			return
+		end
+		if btnp(0) then
+			player:move(-1, 0)
+		elseif btnp(1) then
+			player:move(1, 0)
+		elseif btnp(2) then
+			player:move(0, -1)
+		elseif btnp(3) then
+			player:move(0, 1)
+		elseif btnp(4) then
+			logIndex = 0
+			currentState = State.LOG_VIEW
+		end
+		updateFOV()
+		updateMap()
+	elseif currentState == State.ENEMY_TURN then
+		updateEntities()
+		currentState = State.PLAYER_TURN
+	elseif currentState == State.GAME_OVER then
+		if btnp(5) then
+			currentState = State.PLAYER_TURN
+			entities = {}
+			populateMap()
+			logs = {}
+			log("Welcome back to the dungeon!")
+		end
+	elseif currentState == State.LOG_VIEW then
+		if btnp(4) then
+			currentState = State.PLAYER_TURN
+		elseif btnp(2) then
+			if logIndex > 0 then
+				logIndex = logIndex - 1
+			end
+		elseif btnp(3) then
+			if logIndex < count(logs) then
+				logIndex = logIndex + 1
+			end
+		end
+	end
+end
+
+...
+
+function drawWindows()
+	if currentState == State.GAME_OVER then
+		drawGameOver()
+	elseif currentState == State.LOG_VIEW then
+		drawLogView()
+	end
+end
+
+function drawLogView()
+	clip()
+	camera()
+	rectfill(20, 50, 460, 220, 1)
+	rect(20, 50, 460, 220, 7)
+	cursor(24, 54)
+	-- starting at logIndex, display 15 messages
+	for i=1,15 do
+		local currentIndex = logIndex + i
+		if currentIndex <= count(logs) then
+			print(logs[currentIndex])
+		end
+	end
+end
+```
+
+Our `_update()` function's getting a bit long now, but we'll get around to refactoring that sometime later, I'm sure. What we're doing here is checking for `btnp(4)` (the Z button on your keyboard, or the O button on a controller) and if it's pressed, popping up the same size window as the Game Over screen, but we're filling it with 15 log messages. We set up a logIndex variable when we enter it, and pressing up or down increases or decreases the variable, letting us scroll through the logs. Finally, to exit the window, we press the Z button again, and it pops us back into the player turn state. Let's see it in action!
+
+![Scrolling through logs](p7-log_view.gif)
+
+Looks pretty much like I expected it to. Nothing ground breaking here, but we have a nice thing to be able to check our logs, and a good user interface always goes a long way to getting people to play your game. Let's try a couple more things, while I've got you here. Have you noticed that there's no real way to determine what 'fully healthy' looks like for our entities? They've got a hp variable, and that does ok, but when we eventually add a healing item, how will we know not to heal over their max hp value?
+
+```lua
+-- entities.lua
+
+...
+
+-- constructor for generic entity
+function Entity:new(args)
+	local o = setmetatable({}, Entity)
+	o.x = args.x
+	o.y = args.y
+	o.sprite = args.sprite or 0
+	o.name = args.name or ""
+	o.blocksMovement = args.blocksMovement or false
+	o.combatant = args.combatant or false
+	o.hp = args.hp or 0
+	o.maxHp = args.maxHp or o.hp
+	o.attack = args.attack or 0
+	return o
+end
+```
+
+There! A new maxHp variable, and it's initialized to whatever gets passed in as hp on creation, so you don't even need to worry about adding more stuff to your function calls if you don't need it. We'll modify our side UI to show the player's max hp.
+
+```lua
+-- main.lua
+
+...
+
+function drawSideUI()
+	rectfill(382, 2, 478, 198, 1)
+	rect(382, 2, 478, 198, 7)
+	cursor(386, 6)
+	print(player.name)
+	print("HP: " .. player.hp .. "/" .. player.maxHp)
+	print("Attack: " .. player.attack)
+end
+```
+
+![Showing maximum hit points](p7-max_hp.png)
+
+Looks perfect. Now we can tell exactly how much damage we've taken. I think the last thing we'll take on today is some way to look around and observe enemies without smacking them. First, let's remove our getBlockingEntity function in entities.lua and replace it with something a little more generic.
+
+```lua
+-- entities.lua
+
+...
+
+-- return an entity at the given coords
+-- setting onlyBlockers to true only returns blocking entities
+function getEntity(x, y, onlyBlockers)
+	for entity in all(entities) do
+		if entity.x == x and entity.y == y then
+			if onlyBlockers then
+				if not entity.blocksMovement then
+					break
+				end
+			end
+			return entity
+		end
+	end
+end
+
+-- ai function to make entities chase the player
+function Entity:ai()
+	if player and self != player and self.combatant then
+		-- give enemies a fov of 7 tiles
+		local start = {x=self.x, y=self.y}
+		local goal = {x=player.x, y=player.y}
+		if insideCircle(start, goal, 7) then
+			path = find_path(start, goal,
+                  manhattan_distance,
+                  function () return 1 end,
+                  map_neighbors,
+                  function (node) return node.y * 8 + node.x end,
+                  nil)
+         if path then
+         	local p = path[count(path) - 1]
+         	-- do a check to see if a blocking entity that isn't the player
+         	-- is there, we don't want our enemies killing each other
+         	local e = getEntity(p.x, p.y, true)
+         	if e and e != player then
+         		return
+         	end
+         	local dX = p.x - self.x
+         	local dY = p.y - self.y
+         	self:move(dX, dY)
+         end
+		end		
+	end
+end
+
+-- generic move function for entity
+function Entity:move(dx, dy)
+	local destX = self.x + dx
+	local destY = self.y + dy
+	if getEntity(destX, destY, true) then
+		self:melee(destX, destY)
+	elseif isWalkable(destX, destY) then
+		self.x = destX
+		self.y = destY
+	end
+	if player then
+		currentState = State.ENEMY_TURN
+	end
+end
+
+-- generic melee attack for entity
+function Entity:melee(x, y)
+	target = getEntity(x, y, true)
+	if target.combatant and target.hp > 0 then
+		target.hp = target.hp - self.attack
+		local c = 7
+		if self != player then
+			c = 9
+		end
+		log("\f" .. c .. self.name .. " attacks " .. target.name .. " for " .. self.attack .. " damage.\f7")
+		if target.hp <= 0 then
+			log("\f8" .. self.name .. " kills " .. target.name .. "!\f7")
+			del(entities, target)
+		end
+	end
+end
+```
+
+We've created a new `getEntity()` function, and replaced all references to our `getBlockingEntity()` function with it. Why did we do this? Well, they're basically the same thing, we just have an extra little check to see if something blocked movement, but this gives us much more freedom when it comes to examining something. If we have a more generic function to find entities at a given coordinate, we can look at things that wouldn't necessarily block our movement, like a healing potion or a sword. This gives us a lot, and still provides the same functionality the old function was giving us. If you want to find a blocking entity, just pop `true` in for the onlyBlockers parameter, and it will provide the exact same functionality. Now, let's go to main.lua and get to the meat and potatoes of our examine mode.
+
+```lua
+-- main.lua
+
+State = {PLAYER_TURN = "1", ENEMY_TURN = "2", GAME_OVER = "3",
+	LOG_VIEW = "4", EXAMINE = "5"}
+
+...
+
+function _update()
+	if currentState == State.PLAYER_TURN then
+		if player.hp <=0 then
+			currentState = State.GAME_OVER
+			return
+		end
+		if btnp(0) then
+			player:move(-1, 0)
+		elseif btnp(1) then
+			player:move(1, 0)
+		elseif btnp(2) then
+			player:move(0, -1)
+		elseif btnp(3) then
+			player:move(0, 1)
+		elseif btnp(4) then
+			logIndex = 0
+			currentState = State.LOG_VIEW
+		elseif btnp(5) then
+			examineCursor = {x=player.x, y=player.y}
+			currentState = State.EXAMINE
+		end
+		updateFOV()
+		updateMap()
+	elseif currentState == State.ENEMY_TURN then
+		updateEntities()
+		currentState = State.PLAYER_TURN
+	elseif currentState == State.GAME_OVER then
+		if btnp(5) then
+			currentState = State.PLAYER_TURN
+			entities = {}
+			populateMap()
+			logs = {}
+			log("Welcome back to the dungeon!")
+		end
+	elseif currentState == State.LOG_VIEW then
+		if btnp(4) then
+			currentState = State.PLAYER_TURN
+		elseif btnp(2) then
+			if logIndex > 0 then
+				logIndex = logIndex - 1
+			end
+		elseif btnp(3) then
+			if logIndex < count(logs) then
+				logIndex = logIndex + 1
+			end
+		end
+	elseif currentState == State.EXAMINE then
+		if btnp(5) then
+			currentState = State.PLAYER_TURN
+		elseif btnp(0) then
+			examineCursor.x = examineCursor.x - 1
+		elseif btnp(1) then
+			examineCursor.x = examineCursor.x + 1
+		elseif btnp(2) then
+			examineCursor.y = examineCursor.y - 1
+		elseif btnp(3) then
+			examineCursor.y = examineCursor.y + 1
+		end
+	end
+end
+
+...
+
+function _draw()
+	cls()
+	clip(0, 0, 380, 200)
+	camera(player.x*16 - 11*16, player.y*16 - 6*16)
+	map()
+	drawEntities()
+	if currentState == State.EXAMINE then
+		-- draw a white square around the tile at the cursor
+		rect(examineCursor.x * 16, examineCursor.y * 16,
+			(examineCursor.x + 1) * 16, (examineCursor.y + 1) * 16, 7)
+		-- look for entities at the examine cursor
+		local target = getEntity(examineCursor.x, examineCursor.y)
+		if target then
+			print(target.name, (examineCursor.x + 1.5) * 16, (examineCursor.y + 0.25) * 16)
+		end
+	end
+	drawInterface()
+end
+```
+
+So what's going on here? We added a new examine state that we can enter by pressing X on our keyboard (`btnp(5)`). This sets a variable called examineCursor to our player's position, and highlights the tile specified with a white rectangle. we can move it around using the arrow keys, and when we get to a tile with something in it, it'll print the name off to the side. We can then exit this mode by pressing X again. Let's see it in action.
+
+![Looking at the things around us](p7-examine.gif)
+
+We've added so much this time around, you should be proud of yourself. I'm certainly proud of you, and I'm proud of me too. I'm basically half way through writing this thing! Let's give it a break for today. As always, you can try out the game [here](./p7-roguelike.html). See you in Part 8!
