@@ -318,4 +318,4 @@ We've added pathing.lua to our imports (important to pull that code into our pro
 
 Wow, everything's so lively now! If you wander around fighting enemies long enough, you'll probably even die, which will definitely crash your game. You might notice I bumped up our view radius. That's so we can see enemies just a little bit before they can see us, feel free to tweak to your liking.
 
-Well, what a fulfilling day, and what a good place to take a break. As always, you can give it a try here. I'll see you in Part 7!
+Well, what a fulfilling day, and what a good place to take a break. As always, you can give it a try [here](./p6-roguelike.html). I'll see you in [Part 7](../part-7/part-7.html)!
