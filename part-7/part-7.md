@@ -619,17 +619,17 @@ function Entity:ai()
 				 map_neighbors,
 				 function (node) return node.y * 8 + node.x end,
 				 nil)
-         if path then
-         	local p = path[count(path) - 1]
-         	-- do a check to see if a blocking entity that isn't the player
-         	-- is there, we don't want our enemies killing each other
-         	local e = getEntity(p.x, p.y, true)
-         	if e and e != player then
-         		return
-         	end
-         	local dX = p.x - self.x
-         	local dY = p.y - self.y
-         	self:move(dX, dY)
+			if path then
+				local p = path[count(path) - 1]
+				-- do a check to see if a blocking entity that isn't the player
+				-- is there, we don't want our enemies killing each other
+				local e = getEntity(p.x, p.y, true)
+				if e and e != player then
+					return
+				end
+				local dX = p.x - self.x
+				local dY = p.y - self.y
+				self:move(dX, dY)
 			end
 		end		
 	end
