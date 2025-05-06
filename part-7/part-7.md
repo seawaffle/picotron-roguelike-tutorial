@@ -543,4 +543,97 @@ So what's going on here? We added a new examine state that we can enter by press
 
 ![Looking at the things around us](p7-examine.gif)
 
-We've added so much this time around, you should be proud of yourself. I'm certainly proud of you, and I'm proud of me too. I'm basically half way through writing this thing! Let's give it a break for today. As always, you can try out the game [here](./p7-roguelike.html). See you in Part 8!
+We've added so much this time around, you should be proud of yourself. I'm certainly proud of you, and I'm proud of me too. I'm basically half way through writing this thing! Let's give it a break for today. As always, you can try out the game [here](./p7-roguelike.html). See you in [Part 8](../part-8/part-8.html)!
+
+## Addendum: A Bug in Plain Sight
+
+You might have run into a bit of a problem while moving around. Occasionally we end up with an 'out of memory' error. This seems to happen whenever an enemy can see you through a wall, and I'm guessing that it's because the pathfinding algorithm gets too large and ends up chewing through all our memory. This probably wouldn't be an issue if we were just running on any old computer, but we're making a Picotron game, and there's limitations on memory usage. To get around this, we need to limit the field of view to just what is visible. How can we do that? By drawing a line from one point to another and seeing if we're obstructed. Head on over to old fov.lua.
+
+```lua
+-- fov.lua
+
+function updateFOV()
+	for y = 0, mapHeight do
+		for x = 0, mapWidth do
+			local tile = {x=x, y=y}
+			local index = (y * mapWidth) + x
+			if insideCircle(player, tile, visionRadius) then
+				if isVisible(player, tile) then
+					visible[index] = true
+					seen[index] = true
+				else
+					visible[index] = false
+				end
+			else
+				visible[index] = false
+			end			
+		end
+	end
+end
+
+-- bresenham algorithm taken from https://github.com/rm-code/bresenham
+function isVisible(src, dest)
+	local dx = abs(dest.x - src.x)
+	local dy = abs(dest.y - src.y) * -1
+	local sx = src.x < dest.x and 1 or -1
+	local sy = src.y < dest.y and 1 or -1
+	local err = dx + dy
+	
+	local x = src.x
+	local y = src.y
+	while true do
+		if x == dest.x and y == dest.y then
+			return true
+		end
+		if not isWalkable(x, y) then
+			return false
+		end
+		local tmpErr = 2 * err
+		if tmpErr > dy then
+			err = err + dy
+			x = x + sx
+		end
+		if tmpErr < dx then
+			err = err + dx
+			y = y + sy
+		end
+	end
+end
+```
+
+The Bresenham algorithm is a pretty simple way to draw lines on a grid. I'm not going to go through the math here, but it does the job. You can see that we've modified our `updateFOV()` function to check if a tile is visible if it's inside our vision radius. This will make our line of sight stop at tiles that aren't walkable. We may need to change this in the future if we add tiles that aren't walkable but are transparent, like windows, but for now, it's ok. Now let's hop over to entities.lua and change our problematic enemy vision to use this new function.
+
+```lua
+-- entities.lua
+
+-- ai function to make entities chase the player
+function Entity:ai()
+	if player and self != player and self.combatant then
+		-- give enemies a fov of 7 tiles
+		local start = {x=self.x, y=self.y}
+		local goal = {x=player.x, y=player.y}
+		if insideCircle(start, goal, 7) and isVisible(start, goal) then
+			path = find_path(start, goal,
+				 manhattan_distance,
+				 function () return 1 end,
+				 map_neighbors,
+				 function (node) return node.y * 8 + node.x end,
+				 nil)
+         if path then
+         	local p = path[count(path) - 1]
+         	-- do a check to see if a blocking entity that isn't the player
+         	-- is there, we don't want our enemies killing each other
+         	local e = getEntity(p.x, p.y, true)
+         	if e and e != player then
+         		return
+         	end
+         	local dX = p.x - self.x
+         	local dY = p.y - self.y
+         	self:move(dX, dY)
+			end
+		end		
+	end
+end
+```
+
+There you go. Now our enemies should only be able to try to walk to us if they have unobstructed line of sight. This isn't perfect. You'll notice that you can duck behind corners to dodge enemies, and some of the wall drawing looks a little weird. But, I suppose it's better than crashing our game. If you're an expert, feel free to submit a pull request telling me how to make this better!
