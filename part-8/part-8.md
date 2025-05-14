@@ -2,7 +2,7 @@
 
 In [Part 7](../part-7/part-7.html), we made the beginnings of our user interface, which lets us see all sorts of things. But why are we in the dungeon to begin with? Sure, beating up bad guys is its own reward, but what we really want is the shiny, shiny loot. So today, we're going to start working on making some cool items and a big old sack for you to store them in. Let's start with those classics of dungeons, the healing potion. Pop over to the sprite editor and make your best bottle, and fill it with the reddest liquid possible. We all know healing is red.
 
-![[p8-health_potion.png]]
+![A beautiful potion](p8-health_potion.png)
 
 Hey, maybe I'm getting better at this! That's a pretty good potion. Hopefully yours looks great too. Now all we have to do is plop them around the dungeon. Off to mapgen.lua!
 
