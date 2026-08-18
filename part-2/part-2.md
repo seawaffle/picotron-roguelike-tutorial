@@ -23,7 +23,8 @@ Entity.__index = Entity
 
 -- constructor for generic entity
 function Entity:new(x, y, sprite)
-	local o = setmetatable(o, self)
+	local o = {}
+	o = setmetatable(o, self)
 	o.x = x
 	o.y = y
 	o.sprite = sprite
@@ -53,7 +54,7 @@ function _init()
 	entities = {}
 	player = Entity:new(0, 0, 1)
 	add(entities, player)
-	npc = Entity:new(0, 0, 2)
+	npc = Entity:new(160, 128, 2)
 	add(entities, npc)
 end
 
